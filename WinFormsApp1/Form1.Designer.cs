@@ -29,6 +29,7 @@ namespace WinFormsApp1
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -37,6 +38,7 @@ namespace WinFormsApp1
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -47,6 +49,7 @@ namespace WinFormsApp1
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(116, 35);
             this.button1.TabIndex = 0;
+            this.button1.TabStop = false;
             this.button1.Text = "Точки";
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
@@ -131,8 +134,10 @@ namespace WinFormsApp1
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(116, 35);
             this.button8.TabIndex = 7;
+            this.button8.TabStop = false;
             this.button8.Text = "Закрашенная";
             this.button8.UseVisualStyleBackColor = false;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // Form1
             // 
@@ -165,6 +170,7 @@ namespace WinFormsApp1
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
