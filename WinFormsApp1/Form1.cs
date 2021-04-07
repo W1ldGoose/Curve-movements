@@ -15,31 +15,17 @@ namespace WinFormsApp1
 
         private static List<Point> listPoints = new List<Point>();
 
-        // Cache font instead of recreating font objects each time we paint.
-
-        private void Form1_Load(object sender, System.EventArgs e)
-        {
-
-        }
-
-
-
+        private Boolean isCurve = false, isPoly = false, isFillCurve = false, isBezier = false;  
         // Обработчик события Paint
-        void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            Graphics g = e.Graphics;
-            g.FillClosedCurve(Brushes.Green, listPoints.ToArray());
 
-        }
 
         public Form1()
         {
             InitializeComponent();
             //Paint += Form1_Paint;
-            //this.KeyDown += new KeyEventHandler
-            this.KeyDown += new KeyEventHandler(keyPress);
-        }
+            pictureBox1.MouseDown += new MouseEventHandler(mouseDown);
 
+        }
         private void keyPress(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
@@ -55,19 +41,20 @@ namespace WinFormsApp1
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MouseDown -= mouseEvent;
-            MouseClick += AddPoint;
+            pictureBox1.MouseClick += new MouseEventHandler(AddPoint);
         }
 
         private void AddPoint(object sender, MouseEventArgs e)
         {
+            
             listPoints.Add(e.Location);
 
-            Graphics g = this.CreateGraphics();
-
+            Graphics g = pictureBox1.CreateGraphics();
             Rectangle rect = new Rectangle(e.Location, pointSize);
             g.FillEllipse(new SolidBrush(pointColor), rect);
 
+            //g.Dispose();
+           
         }
 
         private void RedrawPoints()
@@ -91,19 +78,20 @@ namespace WinFormsApp1
         private void button3_Click(object sender, EventArgs e)
         {
 
-            MouseClick -= AddPoint;
-            this.MouseDown += new MouseEventHandler(mouseEvent);
-            this.MouseUp += mouseUpEvent;
+            
         }
 
         private void mouseUpEvent(object sender, MouseEventArgs e)
         {
-            //this.MouseDown -= mouseEvent;
-            this.MouseMove -= mouseDrag;
+            //this.MouseDown -= mouseDown;
+            pictureBox1.MouseMove -= mouseDrag;
+            listPoints[iPointToDrag] = e.Location;
+            Refresh();
         }
 
-        private void mouseEvent(object sender, MouseEventArgs e)
+        private void mouseDown(object sender, MouseEventArgs e)
         {
+            //pictureBox1.MouseClick -= AddPoint;
             //this.MouseMove += new MouseEventHandler(mouseDrag);
             Point[] arPoints = listPoints.ToArray();
 
@@ -111,9 +99,10 @@ namespace WinFormsApp1
             {
                 if (Math.Abs((e.Location - (Size)arPoints[i]).X) < 10 && Math.Abs((e.Location - (Size)arPoints[i]).Y) < 10)
                 {
+                    pictureBox1.MouseClick -= AddPoint;
                     iPointToDrag = i;
-                    this.MouseMove += new MouseEventHandler(mouseDrag);
-
+                    pictureBox1.MouseMove += new MouseEventHandler(mouseDrag);
+                    
                 }
             }
 
@@ -121,9 +110,11 @@ namespace WinFormsApp1
 
         private void mouseDrag(object sender, MouseEventArgs e)
         {
-            Refresh();
-            RedrawPoints();
+            //Refresh();
+            //RedrawPoints();
+            pictureBox1.MouseUp += new MouseEventHandler(mouseUpEvent);
             listPoints[iPointToDrag] = e.Location;
+            Refresh();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -136,18 +127,30 @@ namespace WinFormsApp1
 
         private void button5_Click(object sender, EventArgs e)
         {
+            isPoly = true;
+
+            pictureBox1.Paint += new PaintEventHandler(paint_Poly);
 
             MouseClick -= AddPoint;
 
             Graphics g = this.CreateGraphics();
             Refresh();
 
-            RedrawPoints();
+            //RedrawPoints();
             Point[] arPoints = listPoints.ToArray();
 
             Pen pen = new Pen(lineColor, curveWidth);
             g.DrawClosedCurve(pen, arPoints);
 
+        }
+
+        private void paint_Poly(object sender, PaintEventArgs e)
+        {
+            Graphics g = e.Graphics;
+            Point[] arPoints = listPoints.ToArray();
+
+            Pen pen = new Pen(lineColor, curveWidth);
+            g.DrawClosedCurve(pen, arPoints);
         }
 
         private void button6_Click(object sender, EventArgs e)
@@ -187,6 +190,21 @@ namespace WinFormsApp1
             Image image = Image.FromFile("чародейки.jpg");
             TextureBrush brush = new TextureBrush(image);
             g.FillClosedCurve(brush, arPoints);
+        }
+
+        private void picture_Paint(object sender, PaintEventArgs e)
+        {
+            
+            Graphics g = e.Graphics;
+            
+            Point[] arPoints = listPoints.ToArray();
+
+            Rectangle rect;
+            foreach (var p in arPoints)
+            {
+                rect = new Rectangle(p.X, p.Y, pointSize.Height, pointSize.Width);
+                g.FillEllipse(new SolidBrush(pointColor), rect);
+            }
         }
     }
 }
