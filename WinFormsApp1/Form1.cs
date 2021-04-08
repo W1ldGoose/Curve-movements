@@ -55,8 +55,16 @@ namespace WinFormsApp1
                     else
                     {
                         pointsMove = true;
-                        timer1.Tick += TimerTickHandler;
+                        timer1.Interval = 30;
+                        timer1.Tick += new EventHandler(TimerTickHandler);
                     }
+                    Random rand = new Random();
+                    int tmpX = rand.Next(-1, 1) * speed;
+                    int tmpY = rand.Next(-1, 1) * speed;
+                    Array.Resize(ref newArr, arPoints.Length);
+                    for (int i = 0; i < newArr.Length; i++)
+                        newArr[i] = new Point(tmpX, tmpY);
+                    
                     break;
                 case (Keys.Escape):
                     if (pointsMove)
@@ -101,28 +109,24 @@ namespace WinFormsApp1
 
         private void button3_Click(object sender, EventArgs e)
         {
-
+            if (pointsMove)
+            {
+                pointsMove = false;
+                timer1.Tick -= TimerTickHandler;
+            }
+            else
+            {
+                pointsMove = true;
+                timer1.Interval = 30;
+                timer1.Tick += new EventHandler(TimerTickHandler);
+            }
             Random rand = new Random();
             int tmpX = rand.Next(-1, 1) * speed;
             int tmpY = rand.Next(-1, 1) * speed;
             Array.Resize(ref newArr, arPoints.Length);
 
             for (int i = 0; i < newArr.Length; i++)
-            {
                 newArr[i] = new Point(tmpX, tmpY);
-            }
-
-            if (!pointsMove)
-            {
-                timer1.Tick += new EventHandler(TimerTickHandler);
-                timer1.Interval = 30;
-            }
-            else
-            {
-                pointsMove = false;
-                timer1.Tick -= TimerTickHandler;
-            }
-
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
