@@ -21,7 +21,7 @@ namespace WinFormsApp1
         public Form1()
         {
             InitializeComponent();
-            int var = ((int)('E') + (int)('M')) % 8;
+            int var = ((int)('е') + (int)('з')) % 8;
             MessageBox.Show($"Вариант: {var}");
             pictureBox1.MouseDown += new MouseEventHandler(mouseDown);
             KeyPreview = true;
@@ -37,6 +37,7 @@ namespace WinFormsApp1
                     speed++;
                     break;
                 case (Keys.Subtract):
+                    if(speed>0)
                     speed--;
                     break;
                 case (Keys.Space):
