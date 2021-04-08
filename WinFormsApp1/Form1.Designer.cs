@@ -100,7 +100,7 @@ namespace WinFormsApp1
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(116, 35);
             this.button5.TabIndex = 4;
-            this.button5.Text = "Кривая";
+            this.button5.Text = "Ломанная";
             this.button5.UseVisualStyleBackColor = false;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
@@ -112,7 +112,7 @@ namespace WinFormsApp1
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(116, 35);
             this.button6.TabIndex = 5;
-            this.button6.Text = "Ломаная";
+            this.button6.Text = "Кривая";
             this.button6.UseVisualStyleBackColor = false;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -141,8 +141,13 @@ namespace WinFormsApp1
             this.button8.UseVisualStyleBackColor = false;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            // 
             // pictureBox1
             // 
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(154, 28);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(778, 322);
