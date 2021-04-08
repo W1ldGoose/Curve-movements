@@ -17,6 +17,16 @@ namespace WinFormsApp1
             thisForm1 = form;
         }
 
+        private void trackBar1_Scroll(object sender, System.EventArgs e)
+        {
+            thisForm1.pointSize = new Size(this.trackBar1.Value, this.trackBar1.Value);
+        }
+
+        private void trackBar2_Scroll(object sender, System.EventArgs e)
+        {
+            thisForm1.curveWidth = this.trackBar2.Value;
+        }
+
         private void button1_Click(object sender, System.EventArgs e)
         {
 
@@ -27,7 +37,6 @@ namespace WinFormsApp1
                 var color = f.Color;
                 thisForm1.lineColor = color;
             }
-
         }
 
         private void button2_Click(object sender, System.EventArgs e)
@@ -39,17 +48,6 @@ namespace WinFormsApp1
                 var color = f.Color;
                 thisForm1.pointColor = color;
             }
-        }
-
-
-        private void trackBar1_Scroll(object sender, System.EventArgs e)
-        {
-            thisForm1.pointSize = new Size(this.trackBar1.Value, this.trackBar1.Value);
-        }
-
-        private void trackBar2_Scroll(object sender, System.EventArgs e)
-        {
-            thisForm1.curveWidth = this.trackBar2.Value;
         }
     }
 }

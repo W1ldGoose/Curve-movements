@@ -29,40 +29,20 @@ namespace WinFormsApp1
         /// </summary>
         private void InitializeComponent()
         {
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.textBox2 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             this.SuspendLayout();
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(110, 20);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(200, 60);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Цвет линий";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(110, 90);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(200, 60);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Цвет точек";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // trackBar1
             // 
             this.trackBar1.LargeChange = 1;
-            this.trackBar1.Location = new System.Drawing.Point(110, 195);
+            this.trackBar1.Location = new System.Drawing.Point(129, 247);
             this.trackBar1.Minimum = 1;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(200, 45);
@@ -73,7 +53,7 @@ namespace WinFormsApp1
             // trackBar2
             // 
             this.trackBar2.LargeChange = 1;
-            this.trackBar2.Location = new System.Drawing.Point(110, 284);
+            this.trackBar2.Location = new System.Drawing.Point(129, 351);
             this.trackBar2.Minimum = 1;
             this.trackBar2.Name = "trackBar2";
             this.trackBar2.Size = new System.Drawing.Size(200, 45);
@@ -83,7 +63,7 @@ namespace WinFormsApp1
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(110, 166);
+            this.textBox1.Location = new System.Drawing.Point(129, 211);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
             this.textBox1.Size = new System.Drawing.Size(100, 23);
@@ -93,7 +73,7 @@ namespace WinFormsApp1
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(110, 255);
+            this.textBox2.Location = new System.Drawing.Point(129, 321);
             this.textBox2.Name = "textBox2";
             this.textBox2.ReadOnly = true;
             this.textBox2.Size = new System.Drawing.Size(100, 23);
@@ -101,17 +81,37 @@ namespace WinFormsApp1
             this.textBox2.TabStop = false;
             this.textBox2.Text = "Размер линий";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(129, 54);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(187, 42);
+            this.button1.TabIndex = 6;
+            this.button1.Text = "Цвет точек";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(129, 130);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(187, 37);
+            this.button2.TabIndex = 7;
+            this.button2.Text = "Цвет линий";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Parameters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 341);
+            this.ClientSize = new System.Drawing.Size(489, 474);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox2);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.trackBar2);
             this.Controls.Add(this.trackBar1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
             this.Name = "Parameters";
             this.Text = "Parameters";
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
@@ -122,12 +122,11 @@ namespace WinFormsApp1
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.TrackBar trackBar2;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
     }
 }

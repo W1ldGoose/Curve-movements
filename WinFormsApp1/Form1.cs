@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -12,32 +11,57 @@ namespace WinFormsApp1
         public Size pointSize = new Size(5, 5);
         public Color pointColor = Color.Black;
         public Color lineColor = Color.Red;
-        int speed;
+        int speed = 3;
 
-        private static List<Point> listPoints = new List<Point>();
 
-        private Boolean isCurve = false, isPoly = false, isFillCurve = false, isBezier = false;
-        // Обработчик события Paint
+        private static Point[] arPoints = new Point[0];
+        private bool isCurve = false, isPoly = false, isFillCurve = false, isBezier = false, bMove = false;
 
 
         public Form1()
         {
             InitializeComponent();
-            //Paint += Form1_Paint;
+            int var = ((int)('E') + (int)('M')) % 8;
+            MessageBox.Show($"Вариант: {var}");
             pictureBox1.MouseDown += new MouseEventHandler(mouseDown);
-
+            KeyPreview = true;
+            KeyDown += new KeyEventHandler(keyDown);
         }
-        private void keyPress(object sender, KeyEventArgs e)
+
+        private void keyDown(object sender, KeyEventArgs e)
         {
+            this.Capture = true;
             switch (e.KeyCode)
             {
-                case (Keys.Space):
-                    //KeyDown += new KeyEventHandler(keyPress);
+                case (Keys.Add):
+                    speed++;
                     break;
-                default:
+                case (Keys.Subtract):
+                    speed--;
+                    break;
+                case (Keys.Space):
+                    if (bMove)
+                    {
+                        bMove = false;
+                        timer1.Tick -= TimerTickHandler;
+                    }
+                    else
+                    {
+                        bMove = true;
+                        timer1.Tick += TimerTickHandler;
+                    }
+                    break;
+                case (Keys.Escape):
+                    if (bMove)
+                    {
+                        bMove = false;
+                        timer1.Tick -= TimerTickHandler;
+                    }
+                    Array.Resize(ref arPoints, 0);
+                    pictureBox1.Refresh();
                     break;
             }
-
+            e.Handled = true;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -48,25 +72,13 @@ namespace WinFormsApp1
 
         private void AddPoint(object sender, MouseEventArgs e)
         {
-
-            listPoints.Add(e.Location);
+            Array.Resize(ref arPoints, arPoints.Length + 1);
+            arPoints[arPoints.Length - 1] = e.Location;
 
             Graphics g = pictureBox1.CreateGraphics();
             Rectangle rect = new Rectangle(e.Location, pointSize);
             g.FillEllipse(new SolidBrush(pointColor), rect);
-
-        }
-
-        private void RedrawPoints()
-        {
-            Graphics g = this.CreateGraphics();
-            Point[] arPoints = listPoints.ToArray();
-            Rectangle rect;
-            foreach (var p in arPoints)
-            {
-                rect = new Rectangle(p.X, p.Y, pointSize.Height, pointSize.Width);
-                g.FillEllipse(new SolidBrush(pointColor), rect);
-            }
+            g.Dispose();
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -74,52 +86,89 @@ namespace WinFormsApp1
             Parameters newForm = new Parameters(this);
             newForm.Show();
         }
+        static Point[][] newArr = new Point[2][];
 
         private void button3_Click(object sender, EventArgs e)
         {
-            speed = 3;
+            Random rand = new Random();
+            int tmpX = rand.Next(-1, 1)*speed;
+            int tmpY = rand.Next(-1, 1)*speed;
+
+            newArr[0] = (Point[])arPoints.Clone();
+            newArr[1] = new Point[arPoints.Length];
+
+            for (int i = 0; i < newArr[1].Length; i++)
+            {
+                newArr[1][ i] = new Point(tmpX, tmpY);
+            }
+
+            if (!bMove)
+            {
+                timer1.Tick += new EventHandler(TimerTickHandler);
+                timer1.Interval = 30;
+            }
+            else
+            {
+                bMove = false;
+                timer1.Tick -= TimerTickHandler;
+            }
             pictureBox1.MouseClick -= AddPoint;
-            timer1.Interval = 30;
-            timer1.Tick += new EventHandler(TimerTickHandler);
         }
-        int speedX = 3, speedY = 3;
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (bMove)
+            {
+                switch (keyData)
+                {
+                    case (Keys.Left):
+                        for (int i = 0; i < newArr[1].Length; i++)
+                            newArr[1][i].X = -speed;
+
+                        break;
+                    case (Keys.Right):
+                        for (int i = 0; i < newArr[1].Length; i++)
+                            newArr[1][i].X = speed;
+
+                        break;
+                    case (Keys.Down):
+                        for (int i = 0; i < newArr[1].Length; i++)
+                            newArr[1][i].Y = speed;
+                        break;
+                    case (Keys.Up):
+                        for (int i = 0; i < newArr[1].Length; i++)
+                            newArr[1][i].Y = -speed;
+
+                        break;
+                    default:
+                        return base.ProcessCmdKey(ref msg, keyData);
+                }
+
+                return true;
+            }
+            return false;
+        }
         private void MovePoint(int i)
         {
-            //speedX = speed; speedY = speed;
-            bool test = false;
-            Point p = listPoints[i];
-            if (p.X < 0)
-            {
-                speedX = speed;
-                test = true;
-            }
-            if (p.Y < 0)
-            {
-                speedY = speed;
-                test = true;
-            }
-            if (p.X > pictureBox1.Width)
-            {
-                speedX = -speed;
-                test = true;
-            }
-            if (p.Y > pictureBox1.Height)
-            {
-                speedY = -speed;
-                test = true;
-            }
-         
-               // listPoints[i] = new Point(listPoints[i].X, listPoints[i].Y) + new Size(speed, speed);
+            if (arPoints[i].X < 0)
+                newArr[1][i].X = speed;
+            if (arPoints[i].X > pictureBox1.Width)
+                newArr[1][i].X = -speed;
+            if (arPoints[i].Y < 0)
+                newArr[1][i].Y = speed;
+            if (arPoints[i].Y > pictureBox1.Height)
+                newArr[1][i].Y = -speed;
+            arPoints[i].X += newArr[1][i].X; arPoints[i].Y += newArr[1][i].Y;
+
         }
 
         private void TimerTickHandler(object sender, EventArgs e)
         {
-            //Point arPoints listPoints.ToArray
-            for (int i = 0; i < listPoints.Count; i++)
+
+            bMove = true;
+            for (int i = 0; i < arPoints.Length; i++)
             {
-               
                 MovePoint(i);
-                listPoints[i] = new Point(listPoints[i].X, listPoints[i].Y) + new Size(speedX, speedY);
             }
             pictureBox1.Refresh();
         }
@@ -127,14 +176,11 @@ namespace WinFormsApp1
         private void mouseUpEvent(object sender, MouseEventArgs e)
         {
             pictureBox1.MouseMove -= mouseDrag;
-            listPoints[iPointToDrag] = e.Location;
-
+            arPoints[iPointToDrag] = e.Location;
         }
 
         private void mouseDown(object sender, MouseEventArgs e)
         {
-            Point[] arPoints = listPoints.ToArray();
-
             for (var i = 0; i < arPoints.Length; i++)
             {
                 if (Math.Abs((e.Location - (Size)arPoints[i]).X) < 10 && Math.Abs((e.Location - (Size)arPoints[i]).Y) < 10)
@@ -144,27 +190,32 @@ namespace WinFormsApp1
                     pictureBox1.MouseMove += new MouseEventHandler(mouseDrag);
                 }
             }
-
         }
 
         private void mouseDrag(object sender, MouseEventArgs e)
         {
             pictureBox1.MouseUp += new MouseEventHandler(mouseUpEvent);
-            listPoints[iPointToDrag] = e.Location;
+            arPoints[iPointToDrag] = e.Location;
             pictureBox1.Refresh();
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
             CheckEvents();
+
+            if (bMove)
+            {
+                bMove = false;
+                timer1.Tick -= TimerTickHandler;
+            }
             pictureBox1.MouseClick -= AddPoint;
-            listPoints.Clear();
+            Array.Resize(ref arPoints, 0);
             pictureBox1.Refresh();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            //isPoly = true;
+
             pictureBox1.MouseClick -= AddPoint;
             CheckEvents();
             pictureBox1.Paint += new PaintEventHandler(paint_Poly);
@@ -175,8 +226,6 @@ namespace WinFormsApp1
         {
             isPoly = true;
             Graphics g = e.Graphics;
-            Point[] arPoints = listPoints.ToArray();
-
             Pen pen = new Pen(lineColor, curveWidth);
             g.DrawPolygon(pen, arPoints);
 
@@ -192,7 +241,6 @@ namespace WinFormsApp1
 
         private void CheckEvents()
         {
-
             if (isPoly)
             {
                 pictureBox1.Paint -= paint_Poly;
@@ -203,15 +251,22 @@ namespace WinFormsApp1
                 pictureBox1.Paint -= paint_Curve;
                 isCurve = false;
             }
-            //if(isBezier)
-
+            if (isBezier)
+            {
+                pictureBox1.Paint -= paint_Bezier;
+                isBezier = false;
+            }
+            if (isFillCurve)
+            {
+                pictureBox1.Paint -= paint_Fill;
+                isFillCurve = false;
+            }
         }
 
         private void paint_Curve(object sender, PaintEventArgs e)
         {
             isCurve = true;
             Graphics g = e.Graphics;
-            Point[] arPoints = listPoints.ToArray();
 
             Pen pen = new Pen(lineColor, curveWidth);
             g.DrawClosedCurve(pen, arPoints);
@@ -219,25 +274,36 @@ namespace WinFormsApp1
 
         private void button7_Click(object sender, EventArgs e)//точек должно быть 3*n+1 (4,7,10...)
         {
-            MouseClick -= AddPoint;
-            Graphics g = this.CreateGraphics();
-            Refresh();
+            pictureBox1.MouseClick -= AddPoint;
+            CheckEvents();
+            pictureBox1.Paint += new PaintEventHandler(paint_Bezier);
+            pictureBox1.Refresh();
+        }
 
-            RedrawPoints();
-            Point[] arPoints = listPoints.ToArray();
-
+        private void paint_Bezier(object sender, PaintEventArgs e)
+        {
+            isBezier = true;
+            if (arPoints.Length % 3 != 1)
+                return;
+            //pictureBox1.Paint -= paint_Bezier;
+            //isBezier = false;
+            Graphics g = e.Graphics;
             Pen pen = new Pen(lineColor, curveWidth);
             g.DrawBeziers(pen, arPoints);
         }
 
         private void button8_Click(object sender, EventArgs e)
         {
-            MouseClick -= AddPoint;
-            Graphics g = this.CreateGraphics();
-            Refresh();
+            pictureBox1.MouseClick -= AddPoint;
+            CheckEvents();
+            pictureBox1.Paint += new PaintEventHandler(paint_Fill);
+            pictureBox1.Refresh();
+        }
 
-            RedrawPoints();
-            Point[] arPoints = listPoints.ToArray();
+        private void paint_Fill(object sender, PaintEventArgs e)
+        {
+            isFillCurve = true;
+            Graphics g = e.Graphics;
             Image image = Image.FromFile("чародейки.jpg");
             TextureBrush brush = new TextureBrush(image);
             g.FillClosedCurve(brush, arPoints);
@@ -245,10 +311,7 @@ namespace WinFormsApp1
 
         private void picture_Paint(object sender, PaintEventArgs e)
         {
-
             Graphics g = e.Graphics;
-
-            Point[] arPoints = listPoints.ToArray();
 
             Rectangle rect;
             foreach (var p in arPoints)
@@ -256,8 +319,6 @@ namespace WinFormsApp1
                 rect = new Rectangle(p.X, p.Y, pointSize.Height, pointSize.Width);
                 g.FillEllipse(new SolidBrush(pointColor), rect);
             }
-
-
         }
     }
 }
