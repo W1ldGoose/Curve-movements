@@ -305,11 +305,9 @@ namespace WinFormsApp1
         {
             isFillCurve = true;
             Graphics g = e.Graphics;
-            Image image = Image.FromFile("чародейки.jpg");
-            TextureBrush brush = new TextureBrush(image);
             try
             {
-                g.FillClosedCurve(brush, arPoints);
+                g.FillClosedCurve(Brushes.Aqua, arPoints);
             }
             catch (System.ArgumentException exp)
             {
